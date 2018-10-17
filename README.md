@@ -67,3 +67,43 @@ $ ping 10.132.0.3
 ----------------------
 bastion_IP = 35.241.213.113
 someinternalhost_IP = 10.132.0.3
+
+
+## Homework-04
+
+Создание инстанта из консоли (вариант 1: стартап скритп из локального файла)
+```sh
+$ gcloud compute instances create reddit-app\
+  --boot-disk-size=10GB \
+  --image-family ubuntu-1604-lts \
+  --image-project=ubuntu-os-cloud \
+  --machine-type=g1-small \
+  --tags puma-server \
+  --restart-on-failure \
+  --metadata-from-file startup-script=startup-script.sh
+```
+
+Создание инстанта из консоли (вариант 2: стартап скритп из бакета)
+```sh
+$ gcloud compute instances create reddit-app\
+  --boot-disk-size=10GB \
+  --image-family ubuntu-1604-lts \
+  --image-project=ubuntu-os-cloud \
+  --machine-type=g1-small \
+  --tags puma-server \
+  --restart-on-failure \
+  --metadata=startup-script-url='gs://eav-otus/install.sh'
+```
+Сздание правила **firewall** из консоли
+```sh
+gcloud compute firewall-rules create default-puma-server --allow tcp:9292 \
+  --target-tags=puma-server --source-ranges="0.0.0.0/0" \
+  --description="Allow incoming traffic on Puma server"
+```
+
+Адрес сервера
+----------------------
+testapp_IP = 35.205.205.59
+testapp_port = 9292 
+
+
