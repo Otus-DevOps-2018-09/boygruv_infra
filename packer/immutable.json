@@ -2,7 +2,6 @@
     "variables": 
         {
             "project_id": "",
-            "source_image_family": "",
             "machine_type": "f1-micro",
             "image_description": "",
             "disk_size": "",
@@ -14,9 +13,9 @@
         {
             "type": "googlecompute",
             "project_id": "{{user `project_id`}}",
-            "image_name": "reddit-base-{{timestamp}}",
-            "image_family": "reddit-base",
-            "source_image_family": "{{user `source_image_family`}}",
+            "image_name": "reddit-full-{{timestamp}}",
+            "image_family": "reddit-full",
+            "source_image_family": "reddit-base",
             "zone": "europe-west1-b",
             "ssh_username": "appuser",
             "machine_type": "f1-micro",
@@ -30,13 +29,22 @@
     "provisioners": [
         {
             "type": "shell",
-            "script": "scripts/install_ruby.sh",
+            "script": "files/install.sh",
             "execute_command": "sudo {{.Path}}"
         },
         {
+            "type": "file",
+            "source": "files/puma-server.service",
+            "destination": "/tmp/puma-server.service"
+        },
+        {
             "type": "shell",
-            "script": "scripts/install_mongodb.sh",
-            "execute_command": "sudo {{.Path}}"
+            "inline": "sudo mv /tmp/puma-server.service /etc/systemd/system/puma-server.service"
+        },
+        {
+            "type": "shell",
+            "inline": ["sudo systemctl daemon-reload",
+                       "sudo systemctl enable puma-server.service"]
         }
     ]
 }
