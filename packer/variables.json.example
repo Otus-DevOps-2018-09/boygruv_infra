@@ -1,9 +1,9 @@
 {
   "project_id": "example",
-  "source_image_family": "ubuntu-1604-lts"  
+  "source_image_family": "ubuntu-1604-lts",  
   "image_description": "example",
-  "disk_size": "disk_example",
-  "disk_type": "disk_example",
-  "network": "network_example",
-  "tags": "tag_example"
+  "disk_size": "11",
+  "disk_type": "pd-standard",
+  "network": "default",
+  "tags": "example"
 }
