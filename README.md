@@ -1,6 +1,77 @@
 # boygruv_infra
 boygruv Infra repository
 
+## Homework-06
+
+Установка Terraform:
+```
+$ wget https://releases.hashicorp.com/terraform/0.11.10/terraform_0.11.10_linux_amd64.zip 
+$ unzip terraform_0.11.10_linux_amd64.zip
+$ mv terraform /usr/local/bin/ 
+$ terraform -v 
+```
+Определим провайдера в файл main.tf и скачаем бинарные файлы выбранного провайдера: 
+```
+$ terraform init
+```
+Тестирование плана
+```
+$ terraform plan
+```
+Применение плана
+```
+$ terraform apply
+```
+Просмотр terraform.tfstate
+```
+$ terraform show | grep assigned_nat_ip
+$ terraform refresh
+```
+Output переменные. Описываем в outputs.tf
+```
+output "app_external_ip" {
+  value = "${google_compute_instance.app.network_interface.0.access_config.0.assigned_nat_ip}"
+}
+
+## Просмотр output переменных
+$ terraform output
+$ terraform output app_external_ip 
+```
+
+Пересоздать ресурс при следующем изменении
+```
+$ terraform taint google_compute_instance.app
+```
+Input переменные. Определяем в файле variables.tf, тамже задаем значения по умолчанию
+```
+## Пример использования input переменных
+provider "google" {
+  version = "1.4.0"
+  project = "${var.project}"
+  region  = "${var.region}"
+}
+...
+  metadata {
+    ssh-keys = "appuser:${file(var.public_key_path)}"
+  }
+```
+
+Удалить все ресурсы
+```
+$ terraform destroy
+```
+
+**ВАЖНО** если ресурс добавить через web-интерфейс GCP, то при накатке ресурса терраформ удалит
+ресурс и приветет в соответствие описанное в конфиках терраформа
+
+Pадание со *: при добавлении второго инстанта VM копированием кода в main.tf имеем следующие проблемы:
+ - Дублирование кода
+ - Ручное управление, необходимо руками задавать имя VM
+ - При использовании большого количества VM становится не рациональным
+
+
+****************************************************************************
+
 ## Homework-05
 
 Установка Packer:
