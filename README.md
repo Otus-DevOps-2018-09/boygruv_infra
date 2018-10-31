@@ -1,6 +1,67 @@
 # boygruv_infra
 boygruv Infra repository
 
+## Homework-07
+
+Импорт существующего ресурса в терраформ
+```sh
+$ terraform import google_compute_firewall.firewall_ssh default-allow-ssh
+ ```
+Добавить статический IP
+```sh
+resource "google_compute_address" "app_ip" { 
+  name = "reddit-app-ip"
+}
+```
+Ссылаемся на атрибуты другого ресурса
+```sh
+# Неявная зависимость
+network_interface {
+    network       = "default"
+    access_config = {
+      nat_ip = "$google_compute_address.app_ip.address}"
+    }
+  }
+
+# явную зависимость можно задать через
+depends_on
+```
+### Модули
+Модули размещаем в папке ../modules
+```sh
+# Для подключения модуля выполнить
+$ terraform get
+```
+Получаем output переменные из модуля
+```sh
+output "app_external_ip" {
+  value = "${module.app.app_external_ip}"
+}
+```
+Работа с реестром модулей
+```sh
+module "storage-bucket" {
+  source  = "SweetOps/storage-bucket/google"
+  version = "0.1.1"
+  name = ["storage-bucket-test", "storage-bucket-test2"]
+}
+
+output storage-bucket_url {
+  value = "${module.storage-bucket.url}"
+}
+```
+Удаленный бекэнд (для коллективной работы terraform.tfstate храним в бакете)
+```sh
+terraform {
+  backend "gcs" {
+    bucket  = "boygruv-tf-state-stage"
+    prefix  = "terraform/state"
+  }
+}
+```
+
+****************************************************************************
+
 ## Homework-06
 
 Установка Terraform:
