@@ -29,6 +29,8 @@ resource "google_compute_instance" "app" {
     private_key = "${file(var.private_key_path)}"
   }
 
+
+/*
   provisioner "file" {
     source      = "../modules/app/puma.service"
     destination = "/tmp/puma.service"
@@ -45,7 +47,9 @@ resource "google_compute_instance" "app" {
       "./deploy.sh ${var.mongo_server_ip}",
     ]
   }
+  */
 }
+
 
 resource "google_compute_address" "app_ip" {
   name = "reddit-app-ip"

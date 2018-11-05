@@ -1,6 +1,52 @@
 # boygruv_infra
 boygruv Infra repository
 
+## Homework-09
+
+#### Шаблоны конфигурационных файлов
+Создали шаблон конфигурационного файла для MongoDB, определили переменные для заполнения конфига
+```sh
+--- 
+- name: Configure hosts & deploy application 
+  hosts: all 
+  vars: 
+    mongo_bind_ip: 0.0.0.0 
+tasks: 
+    - name: Change mongo config file 
+      become: true 
+      template: 
+        src: templates/mongod.conf.j2 
+        dest: /etc/mongod.conf 
+        mode: 0644 
+      tags: db-tag 
+```
+Запуск плейбука по определенной группе хостов
+```sh
+$ ansible-playbook reddit_app.yml --check --limit db
+```
+
+#### Handlers
+Хендлеры срабатывают при наличии изменений в таске.
+```sh
+  handlers: 
+  - name: restart mongod 
+    become: true 
+    service: name=mongod state=restarted
+```
+#### Плейбуки
+- Разнесли плейбуки отдельно для APP, DB и DEPLOY
+- Создали общий плейбук и импортировали в него плейбуки для каждого этапа
+
+#### Dynamic inventory
+- Для динамического инвенторя я выбрал gce.py, т.к. terraform-inventory имеет ограничения на использования удаленного бекэнда.
+- Добавил ссылку на gce.py в ansible.cfg
+- В плейбуках определил запуск на нужном хосте черег тэги
+
+#### Провижинг в образах
+- Пересоздал образа пакера reddit-app-base и  reddit-app-db с использованием провижинга через ansible
+
+
+********************************
 ## Homework-08
 
 #### Знакомстао с Ansible
