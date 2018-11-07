@@ -26,19 +26,6 @@ resource "google_compute_instance" "db" {
     private_key = "${file(var.private_key_path)}"
   }
 
-/*
-  provisioner "file" {
-    source      = "../modules/db/mongo_conf_path.sh"
-    destination = "mongo_conf_path.sh"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "chmod +x mongo_conf_path.sh",
-      "./mongo_conf_path.sh",
-    ]
-  }
-*/
 }
 
 

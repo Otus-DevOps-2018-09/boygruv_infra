@@ -7,4 +7,5 @@ packer/variables.json
 .terraform/
 ansible/secrets.*
 ansible/gce.ini
-
+jdauphant.nginx
+vault.key

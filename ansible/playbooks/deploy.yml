@@ -1,5 +1,5 @@
 - name: Deploy App
-  hosts: tag_reddit-app
+  hosts: app
   tasks:
     - name: Fetch the latest version of application code
       git:
@@ -16,6 +16,6 @@
   handlers:
   - name: restart puma
     become: true
-    systemd: 
-      name: puma 
+    systemd:
+      name: puma
       state: restarted
