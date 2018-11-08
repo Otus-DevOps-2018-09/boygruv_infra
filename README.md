@@ -55,6 +55,17 @@ $ ansible-vault decrypt <file>
 ```sh
 $ ansible-vault edit <file>
 ```
+#### Dynamic inventory
+- Для динамической инвентори использую gce.py
+- Для динамического инвентори добавил файлы: gce.py, gce.ini и secret.py в каталоги окружений
+- Подправил плейбуки для доступа к хостам по тэгам: tag_reddit-app и tag_reddit-db
+- Добавил в каталоги с групповами переменными файлы tag_reddit-app и tag_reddit-db с описанием переменных для тэгов
+
+Запуск плейбука с динамическим инвентори (плейбуки запускаем из каталога: ansible):
+```sh
+$ ansible-playbook -i environments/stage/gce.py playbooks/site.yml
+```
+
 
 
 ************************************

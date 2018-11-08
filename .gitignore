@@ -5,7 +5,7 @@ packer/variables.json
 *.tfvars
 *.retry
 .terraform/
-ansible/secrets.*
+secrets.*
 ansible/gce.ini
 jdauphant.nginx
 vault.key
