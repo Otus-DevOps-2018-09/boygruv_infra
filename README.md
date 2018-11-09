@@ -1,4 +1,5 @@
 # boygruv_infra
+[![Build Status](https://travis-ci.com/Otus-DevOps-2018-09/boygruv_infra.svg?branch=master)](https://travis-ci.com/Otus-DevOps-2018-09/boygruv_infra)
 
 ## Homework-10
 
