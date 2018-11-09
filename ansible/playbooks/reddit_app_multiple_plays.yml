@@ -46,7 +46,7 @@
   become: true
   tasks:
     - name: Fetch the latest version of application code
-      git: 
+      git:
         repo: 'https://github.com/express42/reddit.git'
         dest: /home/appuser/reddit
         version: monolith
