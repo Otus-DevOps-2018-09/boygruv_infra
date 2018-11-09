@@ -65,7 +65,9 @@ $ ansible-vault edit <file>
 ```sh
 $ ansible-playbook -i environments/stage/gce.py playbooks/site.yml
 ```
-
+#### Тесты Travis
+- Добавил тесты для Travis (packer, terraform, tflint, ansible-lint)
+- Тесты описаны в скрипте play-travis/run-tests.sh
 
 
 ************************************
