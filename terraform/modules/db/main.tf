@@ -26,6 +26,7 @@ resource "google_compute_instance" "db" {
     private_key = "${file(var.private_key_path)}"
   }
 
+/*
   provisioner "file" {
     source      = "../modules/db/mongo_conf_path.sh"
     destination = "mongo_conf_path.sh"
@@ -37,8 +38,9 @@ resource "google_compute_instance" "db" {
       "./mongo_conf_path.sh",
     ]
   }
-
+*/
 }
+
 
 resource "google_compute_firewall" "firewall_mongo" {
   name    = "allow-mongo-default"
