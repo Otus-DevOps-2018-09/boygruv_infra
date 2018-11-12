@@ -1,6 +1,155 @@
 # boygruv_infra
 boygruv Infra repository
 
+## Homework-08
+
+#### Знакомстао с Ansible
+Установка ansible (для работы требуется python >= 2.7)
+```sh
+$ apt-get install ansible
+
+# Альтернативный вариант
+$ pip install  ansible>=2.4
+
+$ ansible --version
+```
+#### Inventory file
+```sh
+# Привер инвентори файла
+appserver ansible_host=35.195.186.154 ansible_user=appuser \
+    ansible_private_key_file=~/.ssh/appuser
+```
+YAML inventory
+```sh
+app:
+  hosts:
+    appserver:
+      ansible_host: 104.155.0.53
+
+db:
+  hosts:
+    dbserver:
+      ansible_host: 35.233.45.195
+
+```
+
+
+Запуск команды через cli
+```sh
+$ ansible appserver -i ./inventory -m ping
+$ ansible app -m command -a 'ruby -v'
+$ ansible app -m command -a 'ruby -v; bundler -v'
+
+$ ansible db -m command -a 'systemctl status mongod'
+$ ansible db -m shell -a 'systemctl status mongod'
+$ ansible db -m systemd -a name=mongod
+$ ansible db -m service -a name=mongod
+```
+
+> Модуль command выполняет команды, не используя оболочку (sh, bash), поэтому в нем не работают перенаправления потоков и нет доступа к некоторым переменным окружения
+
+#### ansible.cfg
+```sh
+[defaults]
+inventory = ./inventory
+remote_user = appuser
+private_key_file = ~/.ssh/appuser
+host_key_checking = False
+retry_files_enabled = False
+```
+
+#### Плейбуки
+```sh
+---
+- name: Clone
+  hosts: app
+  tasks:
+    - name: Clone repo
+      git:
+        repo: https://github.com/express42/reddit.git
+        dest: /home/appuser/reddit
+
+# Запуск плейбука
+$ ansible-playbook clone.yml
+```
+> При использовании команды
+
+> ansible app -m command -a 'rm -rf ~/reddit' 
+
+> Программа указывает о необходимости исползования специального модуля 'file', для соблюдения идемпотентности
+
+#### Динамический inventory
+Создал файл inventory.json, запуск
+```sh
+$ ansible all -m ping -i getinv.sh
+```
+
+>Для полноценной проверки динамического инвентори создал файл getvm.py. Данный скрипт подключается к GCP и выводит в JSON список IP адресов виртуальных машин.
+
+
+********************************
+
+## Homework-07
+
+Импорт существующего ресурса в терраформ
+```sh
+$ terraform import google_compute_firewall.firewall_ssh default-allow-ssh
+ ```
+Добавить статический IP
+```sh
+resource "google_compute_address" "app_ip" { 
+  name = "reddit-app-ip"
+}
+```
+Ссылаемся на атрибуты другого ресурса
+```sh
+# Неявная зависимость
+network_interface {
+    network       = "default"
+    access_config = {
+      nat_ip = "$google_compute_address.app_ip.address}"
+    }
+  }
+
+# явную зависимость можно задать через
+depends_on
+```
+### Модули
+Модули размещаем в папке ../modules
+```sh
+# Для подключения модуля выполнить
+$ terraform get
+```
+Получаем output переменные из модуля
+```sh
+output "app_external_ip" {
+  value = "${module.app.app_external_ip}"
+}
+```
+Работа с реестром модулей
+```sh
+module "storage-bucket" {
+  source  = "SweetOps/storage-bucket/google"
+  version = "0.1.1"
+  name = ["storage-bucket-test", "storage-bucket-test2"]
+}
+
+output storage-bucket_url {
+  value = "${module.storage-bucket.url}"
+}
+```
+Удаленный бекэнд (для коллективной работы terraform.tfstate храним в бакете)
+```sh
+terraform {
+  backend "gcs" {
+    bucket  = "boygruv-tf-state-stage"
+    prefix  = "terraform/state"
+  }
+}
+```
+
+****************************************************************************
+
 ## Homework-06
 
 Установка Terraform:

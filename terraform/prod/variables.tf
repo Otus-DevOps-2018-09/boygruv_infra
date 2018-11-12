@@ -38,3 +38,9 @@ variable db_disk_image {
   description = "Disk image for reddit db"
   default     = "reddit-db-base"
 }
+
+variable source_ranges {
+  description = "Source range ip-address"
+  type        = "list"
+}
+
