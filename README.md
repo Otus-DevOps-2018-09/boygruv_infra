@@ -1,6 +1,77 @@
 # boygruv_infra
-boygruv Infra repository
+[![Build Status](https://travis-ci.com/Otus-DevOps-2018-09/boygruv_infra.svg?branch=master)](https://travis-ci.com/Otus-DevOps-2018-09/boygruv_infra)
 
+## Homework-10
+
+#### Ansible роли
+- Создали отдельные роли для APP и DB
+
+Инициализация новой роли (шаблона)
+```sh
+$ ansible-galaxy init app
+```
+#### Окружения
+- Создали отдельные окружения: prod и stage
+- Настройки окружений разместили в: `ansible/environments`
+- Создали отдельные inventory для каждого окружения
+- В ansible.cfg определили окружение по умолчанию (путь до inventory)
+- Определили переменные для групп хостов (каталоги group_vars для каждого окружения)
+
+Запуск деплоя для окружения:
+```sh
+$ ansible-playbook -i environments/prod/inventory playbooks/site.yml
+```
+
+#### Работа с Community-ролями
+Внешние роли пописываем в файле requirements.yml для каждого окружения
+```sh
+ - src: jdauphant.nginx
+   version: v2.21.1
+```
+Установка роли
+```sh
+$  ansible-galaxy install -r environments/stage/requirements.yml
+```
+
+#### Работа с Ansible Vault
+- Путь к файлу с ключем прописываем в ansible.cfg
+```sh
+ [defaults]
+ ...
+ vault_password_file = vault.key
+ ```
+
+>Обязательно добавить в .gitignore файл vault.key.
+А еще лучше - хранить его out-of-tree, аналогично ключам SSH (например, в папке ~/.ansible/vault.key)
+
+Шифрация файла:
+```sh
+ $ ansible-vault encrypt environments/prod/credentials.yml
+```
+Расшифровка файла:
+```sh
+$ ansible-vault decrypt <file>
+```
+Редактирование файла:
+```sh
+$ ansible-vault edit <file>
+```
+#### Dynamic inventory
+- Для динамической инвентори использую gce.py
+- Для динамического инвентори добавил файлы: gce.py, gce.ini и secret.py в каталоги окружений
+- Подправил плейбуки для доступа к хостам по тэгам: tag_reddit-app и tag_reddit-db
+- Добавил в каталоги с групповами переменными файлы tag_reddit-app и tag_reddit-db с описанием переменных для тэгов
+
+Запуск плейбука с динамическим инвентори (плейбуки запускаем из каталога: ansible):
+```sh
+$ ansible-playbook -i environments/stage/gce.py playbooks/site.yml
+```
+#### Тесты Travis
+- Добавил тесты для Travis (packer, terraform, tflint, ansible-lint)
+- Тесты описаны в скрипте play-travis/run-tests.sh
+
+
+************************************
 ## Homework-09
 
 #### Шаблоны конфигурационных файлов

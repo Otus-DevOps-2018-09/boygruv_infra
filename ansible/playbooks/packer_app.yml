@@ -5,7 +5,7 @@
   gather_facts: no
   tasks:
     - name: Install ruby and bundler
-      apt: 
+      apt:
         name: "{{ item }}"
         state: present
       loop:

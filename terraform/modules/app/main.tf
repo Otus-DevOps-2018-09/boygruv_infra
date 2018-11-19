@@ -29,25 +29,6 @@ resource "google_compute_instance" "app" {
     private_key = "${file(var.private_key_path)}"
   }
 
-
-/*
-  provisioner "file" {
-    source      = "../modules/app/puma.service"
-    destination = "/tmp/puma.service"
-  }
-
-  provisioner "file" {
-    source      = "../modules/app/deploy.sh"
-    destination = "deploy.sh"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "chmod +x deploy.sh",
-      "./deploy.sh ${var.mongo_server_ip}",
-    ]
-  }
-  */
 }
 
 
@@ -61,8 +42,12 @@ resource "google_compute_firewall" "firewall_puma" {
 
   allow {
     protocol = "tcp"
-
     ports = ["9292"]
+  }
+
+  allow {
+    protocol = "tcp"
+    ports = ["80"]
   }
 
   source_ranges = ["0.0.0.0/0"]

@@ -16,6 +16,6 @@
   handlers:
   - name: restart puma
     become: true
-    systemd: 
-      name: puma 
+    systemd:
+      name: puma
       state: restarted
