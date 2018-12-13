@@ -7,6 +7,7 @@
     - name: Fetch the latest version of application code
       git:
         repo: 'https://github.com/express42/reddit.git'
+
         dest: "/home/{{ deploy_user }}/reddit"
         version: monolith
       notify: restart puma
@@ -20,3 +21,4 @@
   - name: restart puma
     become: true
     systemd: name=puma state=restarted
+
