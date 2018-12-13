@@ -74,12 +74,40 @@ echo '*************************************************************'
 echo 'RUN PACKER TESTS'
 echo '*************************************************************'
 cd $PROJECT_ROOT
+OUTPUT="$(packer validate -var-file=packer/variables.json.example packer/app.json &)"
+if [ "$OUTPUT" == 'Template validated successfully.' ];
+then
+    echo "Check packer/app.json: $OUTPUT"
+else
+    exit 1
+fi
+
+OUTPUT="$(packer validate -var-file=packer/variables.json.example packer/db.json &)"
+if [ "$OUTPUT" == 'Template validated successfully.' ];
+then
+    echo "Check packer/db.json: $OUTPUT"
+else
+    exit 1
+fi
+
+OUTPUT="$(packer validate -var-file=packer/variables.json.example packer/immutable.json &)"
+if [ "$OUTPUT" == 'Template validated successfully.' ];
+then
+    echo "Check packer/immutable.json: $OUTPUT"
+else
+    exit 1
+fi
+
+OUTPUT="$(packer validate -var-file=packer/variables.json.example packer/ubuntu16.json &)"
+if [ "$OUTPUT" == 'Template validated successfully.' ];
+then
+    echo "Check packer/ubuntu16.json: $OUTPUT"
+else
+    exit 1
+fi
+=======
 packer validate -var-file=packer/variables.json.example packer/app.json
 packer validate -var-file=packer/variables.json.example packer/db.json
 packer validate -var-file=packer/variables.json.example packer/immutable.json
 packer validate -var-file=packer/variables.json.example packer/ubuntu16.json
 
-
-echo '*************************************************************'
-echo 'END TESTS'
-echo '*************************************************************'

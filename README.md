@@ -1,6 +1,76 @@
 # boygruv_infra
 [![Build Status](https://travis-ci.com/Otus-DevOps-2018-09/boygruv_infra.svg?branch=master)](https://travis-ci.com/Otus-DevOps-2018-09/boygruv_infra)
 
+
+## Homework-11
+
+#### Работа с Vagrant
+Установка Vagrant + провайдера 
+```sh
+$ apt-get install vagrant virtualbox
+
+$ vagrant -v
+$ vboxmanage --version
+```
+- Перенесли всю инфраструктуру в Vagrantfile
+
+Команды vagrant:
+```sh
+$ vagrant up
+$ vagrant box list
+$ vagrant status
+$ vagrant ssh <host_name>
+$ vagrant provision <host_name>
+$ vagrant halt
+$ vagrant destroy -f
+```
+Описание провижининга в Vagrantfile
+```
+app.vm.provision "ansible" do |ansible| 
+      ansible.playbook = "site.yml" 
+      ansible.groups = { 
+        "app" => ["appserver"], 
+        "app:vars" => { "db_host" => "10.10.10.10"} 
+      } 
+      ansible.extra_vars = { 
+        "deploy_user" => "ubuntu" 
+      } 
+end
+```
+#### Тестирование ролей
+Установка molecule, testinfra (установку производим через файл зависимостей и pip)
+```sh
+ansible/requirements.txt 
+ansible>=2.4 
+molecule>=2.6 
+testinfra>=1.10 
+python-vagrant>=0.5.15 
+
+$ pip install -r requirements.txt 
+```
+Инициализация заготовки тестов molecule
+```sh
+$ molecute init scenario --scenario-name default -r db -d vagrant
+```
+Тестирование ролей используя модули Testinfra
+- Описание тестовой машины, которая создается Molecule для тестов содержится в файле `db/molecule/default/molecule.yml `
+- Playbook для применения находится в `db/molecule/default/playbook.yml`
+- Тесты описываем в: `db/molecule/default/tests/test_default.py`
+
+
+Создание тестовой машины (в папке `ansible/roles/db`)
+```sh
+$ molecule create
+$ molecule list
+## Подключиться к VM
+$ molecule login -h <VM_NAME>
+## Применить playbook
+$ molecule converge
+## Прогон тестов
+$ molecule verify
+```
+
+************************************
 ## Homework-10
 
 #### Ansible роли

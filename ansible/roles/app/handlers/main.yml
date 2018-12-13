@@ -4,3 +4,5 @@
   systemd:
     name: puma
     state: restarted
+    daemon_reload: yes
+
